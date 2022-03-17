@@ -2,9 +2,9 @@
  RestApi E-wallet sederhana
 
 ## instalasi:
- composer install
- php artisan jwt:secret
- php artisan migrate    
+ composer install <br>
+ php artisan jwt:secret <br>
+ php artisan migrate   <br>
 
 
  ## Documentasi: 
