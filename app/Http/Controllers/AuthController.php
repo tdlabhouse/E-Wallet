@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Validator;
 use App\Rules\IsValidPassword;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -98,7 +99,35 @@ class AuthController extends Controller
      */
     public function userProfile()
     {
-        return response()->json(auth()->user());
+        $user = User::with(['m_saldo', 'm_rekening'])->where('id', auth()->user()->id)->first();
+        return  $user;
+    }
+
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => ['required', 'string', 'confirmed', new isValidPassword()],
+            'password_confirmation' => ['same:password'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user = User::find(auth()->user()->id);
+        if (Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'The :attribute is match with current password',
+                'user' => $user
+            ], 400);
+        } else {
+            $user = User::find(auth()->user()->id)->update(['password' => Hash::make($request->password)]);
+        }
+
+
+        return response()->json([
+            'message' => 'User successfully change password',
+            'user' => $user
+        ], 201);
     }
     /**
      * Get the token array structure.

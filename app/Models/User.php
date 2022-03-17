@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -39,6 +40,20 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    function m_rekening()
+    {
+        return $this->hasMany('App\Models\m_rekening', 'id_user');
+    }
+
+    function m_saldo()
+    {
+        return $this->hasOne('App\Models\m_saldo', 'id_user');
+    }
+
+    function transaksi()
+    {
+        return $this->hasMany('App\Models\transaksi', 'id_user');
+    }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
